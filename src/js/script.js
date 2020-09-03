@@ -100,13 +100,13 @@
           /* remove class active for the active product */
           thisProduct.element.classList.remove('active');
           /* END: if the active product isn't the element of thisProduct */
-        };
+        }
         /* END LOOP: for each active product */
-      };
+      }
       /* END: click event listener to trigger */
     };
 
-    const app = {
+     const app = {
 
       initData: function () {
         const thisApp = this;
@@ -137,5 +137,5 @@
     };
 
     app.init();
-
   }
+};
