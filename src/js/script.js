@@ -60,7 +60,7 @@
       thisProduct.data = data;
 
       thisProduct.renderInMenu();
-      thisProduct.getElements ();
+      thisProduct.getElements();
       thisProduct.initOrderForm();
       thisProduct.processOrder();
 
@@ -93,12 +93,12 @@
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
     }
 
-      initAccordion() {
-        const thisProduct = this;
+    initAccordion() {
+      const thisProduct = this;
 
-        /*find the clickable trigger (element that should react to clicking)*/
-        const clickableTigger = thisProduct.element.querySelector(select.menuProduct.clickable);
-        console.log ('wyszukany element'),
+      /*find the clickable trigger (element that should react to clicking)*/
+      const clickableTigger = thisProduct.element.querySelector(select.menuProduct.clickable);
+      console.log('wyszukany element'),
         /*START : click event listener to trigger*/
         clickableTigger.addEventListener('click', function (event) {
           /*prevent default action for event*/
@@ -119,62 +119,99 @@
           }
           /* END: click event listener to trigger */
         });
-      }
-      initOrderForm(){
-        const thisProduct = this; 
-        console.log('initOrderForm');
-        thisProduct.form.addEventListener('submit', function(event){
-          event.preventDefault();
-          thisProduct.processOrder();
-        });
-        
-        for(let input of thisProduct.formInputs){
-          input.addEventListener('change', function(){
-            thisProduct.processOrder();
-          });
-        }
-        
-        thisProduct.cartButton.addEventListener('click', function(event){
-          event.preventDefault();
-          thisProduct.processOrder();
-        });
-      }
-
-      processOrder() {
-        const thisProduct = this;
-        console.log('initOrderForm');
-        const formData  = utils.serializeFormToObject(thisProduct.form);
-        console.log('formData', formData);
-      }
     }
-      const app = {
+    initOrderForm() {
+      const thisProduct = this;
+      console.log('initOrderForm');
+      thisProduct.form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        thisProduct.processOrder();
+      });
 
-        initData: function () {
-          const thisApp = this;
-          thisApp.data = dataSource;
-        },
+      for (let input of thisProduct.formInputs) {
+        input.addEventListener('change', function () {
+          thisProduct.processOrder();
+        });
+      }
 
-        initMenu: function () {
-          const thisApp = this;
-          console.log('thisApp.data:', thisApp.data);
+      thisProduct.cartButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        thisProduct.processOrder();
+      });
+    }
 
-          for (let productData in thisApp.data.products) {
-            new Product(productData, thisApp.data.products[productData]);
+    processOrder() {
+      // this Product odnosi się do 4 instalacji o klasie Produkt jest ich 4 i przedstawia on każdą z osobna//
+      const thisProduct = this;
+
+
+      //wraca z formularza wartości name i value - wiemy jakie dodatki klient zamówił np do pizzy name o kluczu: toppings value: oliwki i salami//
+      const formData = utils.serializeFormToObject(thisProduct.form);
+      console.log('formData', formData);
+
+      /* set variable price to equal thisProduct.data.price */
+      // zmienna zapisuje domyślną cenę produktu, ale dlaczego 'data' a nie 'dataSource' z data.js?//
+      let price = thisProduct.data.price;
+
+      //START LOOP: for each paramId in thisProduct.data.params//
+      //są również składniki odhaczone należy je znaleść po wszystkich params, ale gdzie jest checked? //
+      for (let paramId in thisProduct.data.params) {
+        // stała ma wartość wszystkich wybranych dodatków wykorzystujemy tablicę po wszystkich dodatkach "params"//
+        const paramsValue = thisProduct.data.params[param];
+        /* START LOOP: for each optionId in param.options */
+        //gdzie jest optionID? //
+        for (let optionID in thisProduct.param.options) {
+          /* save the element in param.options with key optionId as const option */
+          const optionValue = thisProduct.param.options[option];
+          /* START IF: if option is selected and option is not default */
+          if (formData) {
+            if (formData.option && optionValue.default) {
+              /* add price of option to variable price */
+              price += optionValue.price
+              /* END IF: if option is selected and option is not default */
+              if (!formData.option) {
+                price -= optionValue.price;
+              }
+              /* START ELSE IF: if option is not selected and option is default */
+              /* deduct price of option from price */
+              else if (optionValue.default && !formData.option) {
+                price -= optionValue.price;
+                /* END ELSE IF: if option is not selected and option is default */
+              }
+              /* END LOOP: for each optionId in param.options */
+            }
+            /* END LOOP: for each paramId in thisProduct.data.params */
           }
-        },
+          /* set the contents of thisProduct.priceElem to be the value of variable price */
 
-        init: function () {
-          const thisApp = this;
-          console.log('*** App starting ***');
-          console.log('thisApp:', thisApp);
-          console.log('classNames:', classNames);
-          console.log('settings:', settings);
-          console.log('templates:', templates);
+          const app = {
 
-          thisApp.initData();
-          thisApp.initMenu();
+            initData: function () {
+              const thisApp = this;
+              thisApp.data = dataSource;
+            },
 
-        },
-      };
-      app.init();
-    };
+            initMenu: function () {
+              const thisApp = this;
+              console.log('thisApp.data:', thisApp.data);
+
+              for (let productData in thisApp.data.products) {
+                new Product(productData, thisApp.data.products[productData]);
+              }
+            },
+
+            init: function () {
+              const thisApp = this;
+              console.log('*** App starting ***');
+              console.log('thisApp:', thisApp);
+              console.log('classNames:', classNames);
+              console.log('settings:', settings);
+              console.log('templates:', templates);
+
+              thisApp.initData();
+              thisApp.initMenu();
+
+            },
+          };
+          app.init();
+        };
