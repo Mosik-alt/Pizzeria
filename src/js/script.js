@@ -173,46 +173,60 @@
               if (!formData.option) {
                 price -= optionValue.price;
               }
+              /* kod odpowiedzialny za obrazki, zaś formData powinna nam zwrócić zaznaczone opcje*/
+              thisProduct = formData;
+              /*Wszystkie obrazki dla tej opcji, to wszystkie elementy wyszukane w thisProduct.imageWrapper, które pasują do selektora, składającego się z:*/
+              let allImages = thisProduct.imageWrapper.querySelectorAll('.' + param + '-' + option);
+              for (let image of allImages) {
+                /*opcja jest zaznaczona (skąd mam to wiedzieć gdzie znajdę tą informację?), to wszystkie obrazki dla tej opcji powinny otrzymać klasę zapisaną w classNames.menuProduct.imageVisible*/
+                if
+                image.classList.add('active');
+              }
+            } else {
+              let allImages = thisProduct.imageWrapper.querySelectorAll('.' + param + '-' + option);
+              for (let image of allImages) {
+                if /* nie zaznaczone*/
+                image.classList.remove('active');
               /* START ELSE IF: if option is not selected and option is default */
               /* deduct price of option from price */
               else if (optionValue.default && !formData.option) {
-                price -= optionValue.price;
-                /* END ELSE IF: if option is not selected and option is default */
+                  price -= optionValue.price;
+                  /* END ELSE IF: if option is not selected and option is default */
+                }
+                /* END LOOP: for each optionId in param.options */
               }
-              /* END LOOP: for each optionId in param.options */
+              /* END LOOP: for each paramId in thisProduct.data.params */
             }
-            /* END LOOP: for each paramId in thisProduct.data.params */
-          }
-          /* set the contents of thisProduct.priceElem to be the value of variable price */
+            /* set the contents of thisProduct.priceElem to be the value of variable price */
 
-          const app = {
+            const app = {
 
-            initData: function () {
-              const thisApp = this;
-              thisApp.data = dataSource;
-            },
+              initData: function () {
+                const thisApp = this;
+                thisApp.data = dataSource;
+              },
 
-            initMenu: function () {
-              const thisApp = this;
-              console.log('thisApp.data:', thisApp.data);
+              initMenu: function () {
+                const thisApp = this;
+                console.log('thisApp.data:', thisApp.data);
 
-              for (let productData in thisApp.data.products) {
-                new Product(productData, thisApp.data.products[productData]);
-              }
-            },
+                for (let productData in thisApp.data.products) {
+                  new Product(productData, thisApp.data.products[productData]);
+                }
+              },
 
-            init: function () {
-              const thisApp = this;
-              console.log('*** App starting ***');
-              console.log('thisApp:', thisApp);
-              console.log('classNames:', classNames);
-              console.log('settings:', settings);
-              console.log('templates:', templates);
+              init: function () {
+                const thisApp = this;
+                console.log('*** App starting ***');
+                console.log('thisApp:', thisApp);
+                console.log('classNames:', classNames);
+                console.log('settings:', settings);
+                console.log('templates:', templates);
 
-              thisApp.initData();
-              thisApp.initMenu();
+                thisApp.initData();
+                thisApp.initMenu();
 
-            },
+              },
+            };
+            app.init();
           };
-          app.init();
-        };
